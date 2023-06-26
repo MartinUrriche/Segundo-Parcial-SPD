@@ -51,3 +51,135 @@ segmentos.
 ## Arduino:
 
 ![Tinkercad](Arduino.png)
+
+## Codigo:
+
+~~~ C++ 
+// C++ code
+//
+//Bibliotecas
+#include <LiquidCrystal.h>
+#include <Servo.h>
+#include <IRremote.h>
+
+//Definicion de dispositivos
+#define Sensor_t A0                
+#define led_v 4              
+#define led_r 5                     
+#define ir_reciver 11
+
+//Servo
+Servo myservo;
+
+//Variables
+LiquidCrystal lcd (13,12,10,9,8,7);
+long int temperatura_c;
+String estacion = " ";
+String estacionActual= "";
+const float temperatura_alerta = 60.0;  
+
+void setup() {
+  lcd.begin(16, 2);
+
+  
+  myservo.attach(6);
+  
+  pinMode(led_v, OUTPUT);
+  pinMode(led_r, OUTPUT);
+  
+  IrReceiver.begin(ir_reciver, DISABLE_LED_FEEDBACK);
+  
+  Serial.begin(9600); 
+}
+
+void loop() 
+{
+  IrReceiver.decode(); 
+  switch(IrReceiver.decodedIRData.decodedRawData)
+  {
+    case 4278238976:
+      int lectura = analogRead(Sensor_t);  
+      temperatura_c = map(((lectura - 20) * 3.04), 0, 1023, -40, 125);
+
+      // Mostrar la temperatura en el display LCD
+      lcd.print("Temp:");
+      lcd.setCursor(6, 0);
+      lcd.print(temperatura_c);
+      lcd.print(" C");
+      lcd.setCursor(0,1);
+      verificarEstacion(temperatura_c); 
+      lcd.print("Estac:"+ String (estacionActual));
+
+      // Verificar si se detecta un incendio 
+      if (temperatura_c > temperatura_alerta) 
+      {
+        activarSistemaIncendio();  
+        mostrarMensajeAlarma();  
+        encenderLEDs();  
+      } 
+      else 
+      {
+        apagarLEDs(); 
+        myservo.write(0);
+      }
+
+      delay(1000);
+      lcd.clear();
+  }
+}
+
+
+void activarSistemaIncendio() 
+{
+  myservo.write(90);  
+}
+
+void mostrarMensajeAlarma() 
+{
+  lcd.clear();  // Limpiar el display LCD
+  lcd.setCursor(0,0);
+  lcd.print("ALERTA DE ");
+  lcd.setCursor(0,1);
+  lcd.print("INCENDIO");
+  delay(1000);
+  lcd.clear();
+}
+
+void encenderLEDs() 
+{
+  digitalWrite(led_v, LOW); 
+  delay(500);
+  digitalWrite(led_r, HIGH);
+  delay(500);
+  digitalWrite(led_v, HIGH);
+  delay(500);
+  digitalWrite(led_r, LOW);
+
+}
+
+void apagarLEDs()
+{
+  digitalWrite(led_v, HIGH);  
+  digitalWrite(led_r, LOW);  
+}
+
+void verificarEstacion(float temperatura) 
+{
+  if (temperatura >= 30) 
+  {
+    estacionActual = "VERANO";
+  } 
+  else if (temperatura >= 20 && temperatura < 30) 
+  {
+    estacionActual = "PRIMAVERA";
+  } 
+  else if (temperatura >= 10 && temperatura < 20) 
+  {
+    estacionActual = "OTOÑO";
+  } 
+  else 
+  {
+    estacionActual = "INVIERNO";
+  }
+}
+
