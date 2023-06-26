@@ -1,0 +1,15 @@
+Led alarma verde = Este Led funciona junto a el led rojo como una alarma para indicar que esta ocurriendo un incendio.
+Resistencia alarma verde = Introduce una resistencia electrica hacia el led que funciona como alarma(verde)
+Led alarma roja = Este Led funciona junto a el led verde como una alarma para indicar que esta ocurriendo un incendio.
+Resistencia alarma roja = Introduce una resistencia electrica hacia el led que funciona como alarma(rojo)
+
+Pantalla LCD = Tiene la funcion de mostrarnos la temperatura ambiente como tambien la estacion del año, y si supera los 60 grados da un aviso
+Resistencia LCD = Introduce una resistencia electrica hacia el LCD
+Potenciometro LCD = Es el encargado de darle una nitides a la pantalla LCD para que pueda mostrars de forma clara los datos
+Sensor temp = Es el encargado de detectar la temperatura ambiente
+Sensor IR = Va a tomar los datos del control remoto IR, para poder prender el LCD
+Control Remoto = Se encarga de poder prender el LCD para que pueda mostrarnos los datos
+
+Servo = Junto a los leds, se activa solo cuando esta ocurriendo un incendio.
+
+Placa_Arduino = Se encarga de todas las conexiones del circuito, como tambien de alimentar los componentes
